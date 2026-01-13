@@ -1,0 +1,68 @@
+widgets: []
+layout:
+  - i: '1'
+    widgetId: clock-widget
+    x: 0
+    'y': 0
+    w: 1
+    h: 2
+  - i: '2'
+    widgetId: quote-widget
+    x: 0
+    'y': 2
+    w: 2
+    h: 2
+  - i: '3'
+    widgetId: heartbeat-widget
+    x: 2
+    'y': 0
+    w: 2
+    h: 2
+  - i: 6d7684ff-cf85-447d-aa42-6451089d9ec6
+    widgetId: sse-debugger-widget
+    x: 0
+    'y': 5
+    w: 4
+    h: 4
+  - i: e521ba02-6f97-44b9-9e1d-e02e31c88102
+    widgetId: weather-widget
+    x: 1
+    'y': 0
+    w: 1
+    h: 2
+    config:
+      title: Weather
+      showHumidity: true
+      updateAnimation: true
+      city: Willoughby Hills
+      latitude: 41.5876
+      longitude: -81.4395
+      units: imperial
+      refreshInterval: 10
+  - i: ab52117a-ba7b-4c68-ae5b-e7713836fcb1
+    widgetId: crypto-price-widget
+    x: 2
+    'y': 2
+    w: 3
+    h: 3
+    config:
+      coinId: bitcoin
+      currency: usd
+      showChange24h: true
+      showMarketCap: true
+      refreshInterval: 300
+      enableCaching: true
+  - i: f3d0f2a1-2a74-4e6e-ab80-3b560272d636
+    widgetId: stock-quote
+    x: 4
+    'y': 0
+    w: 2
+    h: 2
+    config:
+      tickers:
+        - AAPL
+        - BRK.B
+        - MSFT
+        - NVDA
+      refreshInterval: 5
+version: 1.0.0

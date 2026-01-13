@@ -1,0 +1,56 @@
+:root {
+  /* Core Dashboard Colors - Dark/Premium Feel */
+  --dashboard-bg: #0f172a; /* Slate 900 */
+  --dashboard-text: #e2e8f0; /* Slate 200 */
+  
+  /* Widget Colors */
+  --widget-bg: #1e293b; /* Slate 800 */
+  --widget-border: #334155; /* Slate 700 */
+  --widget-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --widget-radius: 0.75rem;
+
+  /* Typography */
+  --font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-size-base: 1rem;
+  
+  /* Accents */
+  --primary-color: #3b82f6; /* Blue 500 */
+  --accent-color: #8b5cf6; /* Violet 500 */
+  
+  /* Grid */
+  --grid-handle-color: rgba(255, 255, 255, 0.2);
+  --grid-handle-hover: var(--primary-color);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-base);
+  background-color: var(--dashboard-bg);
+  color: var(--dashboard-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbar styling for a cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dashboard-bg); 
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--widget-border); 
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color); 
+}

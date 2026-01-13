@@ -1,0 +1,620 @@
+/**
+ * Widget Styles - Global Stylesheet
+ *
+ * Centralized styles for dashboard widgets.
+ * Use these classes to maintain consistency across all widgets.
+ */
+
+/* ============================================
+   LAYOUT PATTERNS
+   ============================================ */
+
+.widget-card {
+  width: 100%;
+  height: 100%;
+  background-color: var(--widget-bg);
+  border: 1px solid var(--widget-border);
+  border-radius: 8px;
+  padding: 20px;
+  color: var(--dashboard-text);
+  box-shadow: var(--widget-shadow);
+  /* Font settings defined in TYPOGRAPHY section */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.flex-center-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-center-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.scrollable-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+/*
+ * Font hierarchy for widgets:
+ * - Display: 48px (3rem) - Main widget values (price, temperature, time)
+ * - Large: 32px (2rem) - Secondary values
+ * - Title: 16-18px (1-1.125rem) - Widget headers and section titles
+ * - Body: 14px (0.875rem) - Content and labels
+ * - Small: 12px (0.75rem) - Metadata and timestamps
+ *
+ * All text inherits font-family from .widget-card
+ */
+
+/* Display sizes - for main widget values */
+.text-large-bold {
+  font-family: inherit;
+  font-size: 3rem; /* 48px */
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0.5rem 0;
+  color: var(--primary-color);
+  letter-spacing: -0.02em;
+}
+
+.text-xlarge {
+  font-family: inherit;
+  font-size: 3rem; /* 48px */
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.text-large {
+  font-family: inherit;
+  font-size: 2rem; /* 32px */
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Titles - for widget headers and sections */
+.text-medium-title {
+  font-family: inherit;
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+.text-small-title {
+  font-family: inherit;
+  font-size: 1rem; /* 16px */
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Body text - for content and descriptions */
+.text-label {
+  font-family: inherit;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0.7;
+}
+
+.text-secondary {
+  font-family: inherit;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.text-small {
+  font-family: inherit;
+  font-size: 0.75rem; /* 12px */
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0.7;
+}
+
+/* Tiny text - for timestamps and metadata */
+.text-tiny {
+  font-family: inherit;
+  font-size: 0.7rem; /* 11px */
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.text-micro {
+  font-family: inherit;
+  font-size: 0.65rem; /* 10px */
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Special fonts */
+.font-mono {
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+  letter-spacing: -0.01em;
+}
+
+/* Text utilities */
+.text-center {
+  text-align: center;
+}
+
+.text-error {
+  font-family: inherit;
+  color: #ef4444;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  text-align: center;
+}
+
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-accent {
+  color: var(--accent-color);
+}
+
+.text-muted {
+  opacity: 0.5;
+}
+
+.text-break {
+  word-break: break-all;
+}
+
+/* Font weight utilities */
+.font-light {
+  font-weight: 300;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Text style utilities */
+.italic {
+  font-style: italic;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+/* ============================================
+   SPACING
+   ============================================ */
+
+.p-small {
+  padding: 5px;
+}
+
+.p-medium {
+  padding: 10px;
+}
+
+.p-large {
+  padding: 20px;
+}
+
+.m-none {
+  margin: 0;
+}
+
+.mt-small {
+  margin-top: 5px;
+}
+
+.mt-medium {
+  margin-top: 10px;
+}
+
+.mt-large {
+  margin-top: 15px;
+}
+
+.mt-xlarge {
+  margin-top: 20px;
+}
+
+.mb-small {
+  margin-bottom: 5px;
+}
+
+.mb-medium {
+  margin-bottom: 8px;
+}
+
+.mb-large {
+  margin-bottom: 10px;
+}
+
+.gap-small {
+  gap: 4px;
+}
+
+.gap-medium {
+  gap: 8px;
+}
+
+.gap-large {
+  gap: 10px;
+}
+
+/* ============================================
+   INTERACTIVE ELEMENTS
+   ============================================ */
+
+.btn-primary {
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--dashboard-text);
+  border: 1px solid var(--widget-border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.input-text {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--widget-border);
+  background: rgba(0, 0, 0, 0.1);
+  color: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.input-select {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--widget-border);
+  background: rgba(0, 0, 0, 0.1);
+  color: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  cursor: pointer;
+}
+
+.input-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* ============================================
+   STATUS INDICATORS
+   ============================================ */
+
+.status-pulse {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.status-pulse.active {
+  background-color: #2ecc71;
+}
+
+.status-pulse.inactive {
+  background-color: #95a5a6;
+}
+
+.status-pulse.error {
+  background-color: #e74c3c;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.badge-status {
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.badge-status.connected {
+  background: #2ecc71;
+}
+
+.badge-status.disconnected {
+  background: #e74c3c;
+}
+
+.badge-status.pending {
+  background: #f39c12;
+}
+
+.indicator-left {
+  border-left: 3px solid var(--primary-color);
+}
+
+.indicator-left.inactive {
+  border-left: 3px solid transparent;
+}
+
+/* ============================================
+   CARDS & CONTAINERS
+   ============================================ */
+
+.log-entry {
+  padding: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.75rem;
+}
+
+.log-entry-header {
+  display: flex;
+  justify-content: space-between;
+  opacity: 0.6;
+  margin-bottom: 2px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--widget-bg);
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  color: var(--dashboard-text);
+}
+
+.modal-header {
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+}
+
+.modal-subtitle {
+  opacity: 0.6;
+  font-size: 14px;
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-hint {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 3px;
+}
+
+.form-error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+/* ============================================
+   WIDGET-SPECIFIC COMPONENTS
+   ============================================ */
+
+/* Crypto Price Widget */
+.crypto-change-indicator {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.crypto-change-indicator.positive {
+  color: #22c55e;
+}
+
+.crypto-change-indicator.negative {
+  color: #ef4444;
+}
+
+.connection-status-dot {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.connection-status-dot.connected {
+  background-color: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.connection-status-dot.disconnected {
+  background-color: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.opacity-primary {
+  opacity: 0.8;
+}
+
+.opacity-secondary {
+  opacity: 0.6;
+}
+
+.opacity-tertiary {
+  opacity: 0.5;
+}
+
+.rounded {
+  border-radius: 8px;
+}
+
+.rounded-small {
+  border-radius: 4px;
+}
+
+.rounded-large {
+  border-radius: 12px;
+}
+
+.shadow-widget {
+  box-shadow: var(--widget-shadow);
+}
+
+.bg-subtle {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.bg-transparent {
+  background: transparent;
+}
+
+.border-widget {
+  border: 1px solid var(--widget-border);
+}
+
+.transition-opacity {
+  transition: opacity 0.2s;
+}
+
+.transition-all {
+  transition: all 0.2s;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+.responsive-text-large {
+  font-size: 48px;
+}
+
+.responsive-text-medium {
+  font-size: 32px;
+}
+
+/* For smaller widgets, use these classes with conditional rendering */
+@media (max-width: 768px) {
+  .responsive-text-large {
+    font-size: 32px;
+  }
+
+  .responsive-text-medium {
+    font-size: 24px;
+  }
+}
