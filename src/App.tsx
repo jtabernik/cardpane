@@ -4,10 +4,15 @@ import { Dashboard } from './core/Dashboard';
 import type { DashboardLayout, Widget } from './core/types';
 import { AddWidgetModal } from './components/AddWidgetModal';
 import { EditWidgetModal } from './components/EditWidgetModal';
-import { StyleSwitcher } from './components/StyleSwitcher';
 import { SettingsPage } from './components/SettingsPage';
 import { loadWidgets } from './widgets';
 import './styles/theme.css';
+
+const STYLESHEETS = [
+  { id: 'default', name: 'Default', path: '/src/styles/widgets.css' },
+  { id: 'neon', name: 'Neon', path: '/src/styles/widgets-neon.css' },
+  { id: 'mono', name: 'Monochrome', path: '/src/styles/widgets-mono.css' },
+];
 
 function App() {
   const [availableWidgets, setAvailableWidgets] = useState<Widget[]>([]);
@@ -17,6 +22,17 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isWidgetsLoading, setIsWidgetsLoading] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentStyle, setCurrentStyle] = useState('default');
+
+  // Load saved style preference
+  useEffect(() => {
+    const saved = localStorage.getItem('widget-stylesheet');
+    if (saved) {
+      setCurrentStyle(saved);
+      applyStylesheet(saved);
+    }
+  }, []);
 
   // Load all widgets dynamically
   useEffect(() => {
@@ -49,6 +65,29 @@ function App() {
         setIsLoading(false);
       });
   }, []);
+
+  const applyStylesheet = (styleId: string) => {
+    // Remove all widget stylesheets
+    const existingLinks = document.querySelectorAll('link[data-widget-stylesheet]');
+    existingLinks.forEach(link => link.remove());
+
+    // Add the selected stylesheet
+    const stylesheet = STYLESHEETS.find(s => s.id === styleId);
+    if (stylesheet) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = stylesheet.path;
+      link.setAttribute('data-widget-stylesheet', 'true');
+      document.head.appendChild(link);
+    }
+  };
+
+  const handleStyleChange = (styleId: string) => {
+    setCurrentStyle(styleId);
+    localStorage.setItem('widget-stylesheet', styleId);
+    applyStylesheet(styleId);
+    setIsMenuOpen(false);
+  };
 
   const saveLayout = (newLayout: DashboardLayout) => {
     fetch('http://localhost:3001/api/layout', {
@@ -144,28 +183,12 @@ function App() {
         zIndex: 100
       }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: '1.5rem', display: 'inline-block', marginRight: '16px' }}>Dynamic Dashboard</h1>
-          <span style={{ fontSize: '0.9rem', opacity: 0.6 }}>Modular Discovery System</span>
+          <h1 style={{ margin: 0, fontSize: '1.5rem' }}>CardPane</h1>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ position: 'relative' }}>
           <button
-            onClick={handleResetLayout}
-            style={{
-              background: 'transparent',
-              color: 'var(--dashboard-text)',
-              border: '1px solid var(--widget-border)',
-              padding: '10px 15px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '0.9rem',
-              opacity: 0.8
-            }}
-          >
-            Reset
-          </button>
-          <button
-            onClick={() => setIsSettingsOpen(true)}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
             style={{
               background: 'transparent',
               color: 'var(--dashboard-text)',
@@ -176,26 +199,145 @@ function App() {
               fontSize: '0.9rem',
               opacity: 0.8
             }}
-            title="Dashboard Settings"
           >
-            ⚙️ Settings
+            ☰ Menu
           </button>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            style={{
-              background: 'var(--primary-color)',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '0.9rem',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-            }}
-          >
-            + Add Widget
-          </button>
+
+          {isMenuOpen && (
+            <>
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 999
+                }}
+                onClick={() => setIsMenuOpen(false)}
+              />
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '8px',
+                background: 'var(--widget-bg)',
+                border: '1px solid var(--widget-border)',
+                borderRadius: '8px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                minWidth: '200px',
+                zIndex: 1000,
+                overflow: 'hidden'
+              }}>
+                <button
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    color: 'var(--dashboard-text)',
+                    border: 'none',
+                    padding: '12px 20px',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    textAlign: 'left',
+                    borderBottom: '1px solid var(--widget-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <span>➕</span> Add Widget
+                </button>
+                <button
+                  onClick={() => {
+                    setIsSettingsOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    color: 'var(--dashboard-text)',
+                    border: 'none',
+                    padding: '12px 20px',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    textAlign: 'left',
+                    borderBottom: '1px solid var(--widget-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <span>⚙️</span> Settings
+                </button>
+                <button
+                  onClick={() => {
+                    handleResetLayout();
+                    setIsMenuOpen(false);
+                  }}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    color: 'var(--dashboard-text)',
+                    border: 'none',
+                    padding: '12px 20px',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    textAlign: 'left',
+                    borderBottom: '1px solid var(--widget-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <span>🔄</span> Reset Layout
+                </button>
+                <div style={{
+                  padding: '8px 20px 4px',
+                  fontSize: '0.75rem',
+                  color: 'var(--dashboard-text)',
+                  opacity: 0.5,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Theme
+                </div>
+                {STYLESHEETS.map(style => (
+                  <button
+                    key={style.id}
+                    onClick={() => handleStyleChange(style.id)}
+                    style={{
+                      width: '100%',
+                      background: currentStyle === style.id ? 'rgba(255,255,255,0.1)' : 'transparent',
+                      color: 'var(--dashboard-text)',
+                      border: 'none',
+                      padding: '12px 20px 12px 40px',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                      textAlign: 'left',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = currentStyle === style.id ? 'rgba(255,255,255,0.1)' : 'transparent'}
+                  >
+                    <span>{style.name}</span>
+                    {currentStyle === style.id && <span>✓</span>}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </header>
 
@@ -227,8 +369,6 @@ function App() {
       {isSettingsOpen && (
         <SettingsPage onClose={() => setIsSettingsOpen(false)} />
       )}
-
-      <StyleSwitcher isEditable={true} />
     </div>
   );
 }
