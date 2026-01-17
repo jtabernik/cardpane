@@ -35,6 +35,5 @@ export const ClockWidget: Widget = {
     name: 'Digital Clock',
     description: 'Displays the current time and date',
     component: ClockComponent,
-    defaultSize: { w: 3, h: 4 },
-    supportedSizes: [{ w: 3, h: 4 }, { w: 6, h: 4 }]
+    defaultSize: { w: 3, h: 4 }
 };

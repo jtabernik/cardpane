@@ -7,7 +7,6 @@ export const widget: Widget = {
     description: 'Monitors the server health via SSE pulses every 5 minutes',
     component: HeartbeatComponent,
     defaultSize: { w: 2, h: 2 },
-    supportedSizes: [{ w: 2, h: 2 }],
     dataExportSchema: {
         description: 'Server health monitoring via periodic heartbeat pulses',
         fields: {

@@ -21,8 +21,7 @@ export const widget: Widget = {
   name: 'Crypto Price',
   description: 'Track cryptocurrency prices in real-time',
   component: CryptoPriceComponent,
-  defaultSize: { w: 2, h: 3 },
-  supportedSizes: [{ w: 2, h: 2 }, { w: 2, h: 3 },{ w: 3, h: 3 }],
+  defaultSize: { w: 2, h: 2 },
 
   // SECRETS (per-widget-type) - Apply to ALL instances
   // These are NEVER exposed to the frontend

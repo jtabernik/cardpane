@@ -7,7 +7,6 @@ export const widget: Widget = {
     description: 'Displays the current time and date',
     component: ClockComponent,
     defaultSize: { w: 1, h: 1 },
-    supportedSizes: [{ w: 1, h: 1 }, { w: 1, h: 2 }],
     dataExportSchema: {
         description: 'Current time and date information (frontend-only widget)',
         fields: {

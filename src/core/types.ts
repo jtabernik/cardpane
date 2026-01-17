@@ -69,7 +69,6 @@ export interface Widget {
   description?: string;
   component: ComponentType<WidgetProps>;
   defaultSize: GridSize;
-  supportedSizes?: GridSize[]; // If defined, restrict resizing to these
   secretsSchema?: SecretsSchema; // Defines what secrets this widget needs (server-side only)
   configSchema?: ConfigSchema; // Defines what configuration this widget needs (per-instance)
   dataExportSchema?: DataExportSchema; // Defines what data this widget exports for AI/external consumption

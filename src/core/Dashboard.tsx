@@ -82,32 +82,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
         if (onLayoutChange) {
             const newLayout: DashboardLayout = currentLayout.map(l => {
                 const original = layout.find(item => item.i === l.i);
-                const widgetDef = widgetMap[original?.widgetId || ''];
-
-                // Validate size against supportedSizes if defined
-                let finalW = l.w;
-                let finalH = l.h;
-
-                if (widgetDef?.supportedSizes && widgetDef.supportedSizes.length > 0) {
-                    // Find closest supported size
-                    const supported = widgetDef.supportedSizes.find(
-                        s => s.w === l.w && s.h === l.h
-                    );
-
-                    if (!supported) {
-                        // Revert to default size if not supported
-                        finalW = widgetDef.defaultSize.w;
-                        finalH = widgetDef.defaultSize.h;
-                    }
-                }
 
                 return {
                     ...original!,
                     widgetId: original?.widgetId || 'unknown',
                     x: l.x,
                     y: l.y,
-                    w: finalW,
-                    h: finalH
+                    w: l.w,
+                    h: l.h
                 };
             });
             onLayoutChange(newLayout);

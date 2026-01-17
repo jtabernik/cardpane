@@ -7,7 +7,6 @@ export const widget: Widget = {
     description: 'Monitors all real-time SSE traffic with filtering',
     component: SSEDebuggerComponent,
     defaultSize: { w: 4, h: 4 },
-    supportedSizes: [{ w: 4, h: 4 }, { w: 6, h: 6 }],
     dataExportSchema: {
         description: 'SSE event log and connection status (frontend-only widget)',
         fields: {
