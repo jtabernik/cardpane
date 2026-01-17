@@ -21,7 +21,7 @@ layout:
   - i: 6d7684ff-cf85-447d-aa42-6451089d9ec6
     widgetId: sse-debugger-widget
     x: 0
-    'y': 5
+    'y': 4
     w: 4
     h: 4
   - i: e521ba02-6f97-44b9-9e1d-e02e31c88102
@@ -43,8 +43,8 @@ layout:
     widgetId: crypto-price-widget
     x: 2
     'y': 2
-    w: 3
-    h: 3
+    w: 2
+    h: 2
     config:
       coinId: bitcoin
       currency: usd
