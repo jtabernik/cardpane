@@ -8,20 +8,20 @@ layout:
     h: 2
   - i: '2'
     widgetId: quote-widget
-    x: 0
-    'y': 2
+    x: 4
+    'y': 3
     w: 2
     h: 2
   - i: '3'
     widgetId: heartbeat-widget
-    x: 2
-    'y': 0
+    x: 4
+    'y': 5
     w: 2
     h: 2
   - i: 6d7684ff-cf85-447d-aa42-6451089d9ec6
     widgetId: sse-debugger-widget
     x: 0
-    'y': 4
+    'y': 6
     w: 4
     h: 4
   - i: e521ba02-6f97-44b9-9e1d-e02e31c88102
@@ -42,7 +42,7 @@ layout:
   - i: ab52117a-ba7b-4c68-ae5b-e7713836fcb1
     widgetId: crypto-price-widget
     x: 2
-    'y': 2
+    'y': 0
     w: 2
     h: 2
     config:
@@ -53,16 +53,46 @@ layout:
       refreshInterval: 300
       enableCaching: true
   - i: f3d0f2a1-2a74-4e6e-ab80-3b560272d636
-    widgetId: stock-quote
+    widgetId: stock-quote-widget
     x: 4
     'y': 0
-    w: 2
-    h: 2
+    w: 1
+    h: 3
     config:
-      tickers:
-        - AAPL
-        - BRK.B
-        - MSFT
-        - NVDA
+      tickers: AAPL,BRK.B,MSFT,NVDA,SPY
       refreshInterval: 5
+  - i: c4e4cd7c-31bf-4b46-858f-2c2e13fc3ea7
+    widgetId: truenas-widget
+    x: 5
+    'y': 0
+    w: 1
+    h: 3
+    config:
+      serverAddress: 192.168.0.146
+      poolName: TaberNAS
+      refreshInterval: 5
+  - i: 7e68cfd7-fb1a-48fe-add4-9d724e589d7e
+    widgetId: docker-widget
+    x: 0
+    'y': 2
+    w: 2
+    h: 4
+    config:
+      hostAddress: 192.168.0.150
+      port: 2375
+      containerName: pihole
+      refreshInterval: 300
+      showStats: true
+  - i: 8833a94d-b797-4c50-8848-f28d03f4d296
+    widgetId: docker-widget
+    x: 2
+    'y': 2
+    w: 2
+    h: 4
+    config:
+      hostAddress: 192.168.0.150
+      port: 2375
+      containerName: hbbs
+      refreshInterval: 300
+      showStats: true
 version: 1.0.0

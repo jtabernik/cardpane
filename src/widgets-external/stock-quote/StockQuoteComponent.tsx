@@ -25,7 +25,7 @@ export const StockQuoteComponent: React.FC<WidgetProps> = ({ id, size }) => {
   const [stockData, setStockData] = useState<StockData | null>(null);
 
   // Subscribe to stock updates via SSE
-  useSSE('stock-quote', (data) => {
+  useSSE('stock-quote-widget', (data) => {
     // Filter to only this widget instance's data
     if (data.instanceId === id) {
       setStockData(data as StockData);
