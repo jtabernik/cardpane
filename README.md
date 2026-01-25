@@ -1,5 +1,7 @@
 # CardPane
 
+![CardPane screen](./cardpane-demo.png)
+
 A highly customizable, widget-based dashboard system with real-time updates via Server-Sent Events (SSE). Built with React, TypeScript, and Vite.
 
 ## Features
