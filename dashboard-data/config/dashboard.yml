@@ -8,21 +8,21 @@ layout:
     h: 2
   - i: '2'
     widgetId: quote-widget
-    x: 4
-    'y': 3
+    x: 2
+    'y': 8
     w: 2
     h: 2
   - i: '3'
     widgetId: heartbeat-widget
     x: 4
-    'y': 5
+    'y': 8
     w: 2
     h: 2
   - i: 6d7684ff-cf85-447d-aa42-6451089d9ec6
     widgetId: sse-debugger-widget
     x: 0
     'y': 6
-    w: 4
+    w: 2
     h: 4
   - i: e521ba02-6f97-44b9-9e1d-e02e31c88102
     widgetId: weather-widget
@@ -95,4 +95,23 @@ layout:
       containerName: hbbs
       refreshInterval: 300
       showStats: true
+  - i: 754e34d1-67ab-4d16-8d09-0ca931c18bec
+    widgetId: email-widget
+    x: 4
+    'y': 3
+    w: 2
+    h: 5
+    config:
+      imapServer: imap.mail.yahoo.com
+      imapPort: 993
+      emailCount: 10
+      refreshInterval: 5
+  - i: 69bc7485-b3d3-4f4c-bcb4-7d998b58eba2
+    widgetId: pomodoro-widget
+    x: 2
+    'y': 6
+    w: 2
+    h: 2
+    config:
+      duration: 25
 version: 1.0.0

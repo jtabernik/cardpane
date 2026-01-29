@@ -322,11 +322,12 @@ function syncWidgetBackends() {
                 // Legacy: just a cleanup function
                 activeBackends.set(instanceId, { cleanup: result, exportData: null, refresh: null, config: item.config });
             } else if (result && typeof result === 'object') {
-                // New: object with cleanup, exportData, and optionally refresh
+                // New: object with cleanup, exportData, refresh, and custom methods
                 activeBackends.set(instanceId, {
                     cleanup: result.cleanup || (() => {}),
                     exportData: result.exportData || null,
                     refresh: result.refresh || null,
+                    getEmail: result.getEmail || null,
                     config: item.config
                 });
             } else {
@@ -509,6 +510,37 @@ app.get('/api/dashboard/widget-type/:widgetId', (req, res) => {
         instance_count: widgets.length,
         instances: widgets
     });
+});
+
+// Get full email content from email widget cache
+app.get('/api/widgets/:instanceId/email/:uid', (req, res) => {
+    const { instanceId, uid } = req.params;
+    const backend = activeBackends.get(instanceId);
+
+    if (!backend) {
+        return res.status(404).json({
+            error: 'Widget instance not found',
+            instanceId
+        });
+    }
+
+    if (!backend.getEmail) {
+        return res.status(400).json({
+            error: 'This widget does not support email retrieval',
+            instanceId
+        });
+    }
+
+    const email = backend.getEmail(parseInt(uid, 10));
+
+    if (!email) {
+        return res.status(404).json({
+            error: 'Email not found in cache',
+            uid
+        });
+    }
+
+    res.json(email);
 });
 
 app.get('/api/events', (req, res) => {
