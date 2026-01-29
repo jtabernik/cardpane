@@ -8,9 +8,9 @@ layout:
     h: 2
   - i: '2'
     widgetId: quote-widget
-    x: 2
-    'y': 8
-    w: 2
+    x: 3
+    'y': 6
+    w: 1
     h: 2
   - i: '3'
     widgetId: heartbeat-widget
@@ -110,7 +110,7 @@ layout:
     widgetId: pomodoro-widget
     x: 2
     'y': 6
-    w: 2
+    w: 1
     h: 2
     config:
       duration: 25

@@ -1,12 +1,32 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { WidgetProps } from '../../core/types';
 
-export const PomodoroComponent: React.FC<WidgetProps> = ({ config, size }) => {
+export const PomodoroComponent: React.FC<WidgetProps> = ({ config }) => {
   const durationMinutes = config?.duration || 25;
   const totalSeconds = durationMinutes * 60;
 
   const [remaining, setRemaining] = useState(totalSeconds);
   const [isRunning, setIsRunning] = useState(false);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Observe container size changes
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerSize({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        });
+      }
+    });
+
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   // Reset timer when duration config changes
   useEffect(() => {
@@ -56,10 +76,16 @@ export const PomodoroComponent: React.FC<WidgetProps> = ({ config, size }) => {
   // SVG ring calculations
   const progress = remaining / totalSeconds;
 
-  // Responsive sizing based on widget dimensions
-  const minDimension = Math.min(size.w, size.h);
-  const svgSize = minDimension <= 1 ? 100 : minDimension <= 2 ? 140 : 180;
-  const strokeWidth = minDimension <= 1 ? 8 : minDimension <= 2 ? 10 : 12;
+  // Calculate ring size to fill most of the container
+  // Leave space for controls at the bottom (about 32px)
+  const controlsHeight = 32;
+  const padding = 16;
+  const availableWidth = containerSize.width - padding * 2;
+  const availableHeight = containerSize.height - padding * 2 - controlsHeight;
+  const svgSize = Math.max(60, Math.min(availableWidth, availableHeight));
+
+  // Scale stroke width proportionally
+  const strokeWidth = Math.max(6, Math.min(14, svgSize * 0.07));
   const radius = (svgSize - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
@@ -67,12 +93,24 @@ export const PomodoroComponent: React.FC<WidgetProps> = ({ config, size }) => {
   // We want ring to disappear as time runs out, so offset increases as progress decreases
   const strokeDashoffset = circumference * (1 - progress);
 
-  const isCompact = size.w < 2 || size.h < 2;
+  // Scale font size based on ring size
+  const fontSize = Math.max(0.9, Math.min(2.5, svgSize / 80));
 
   return (
-    <div className="widget-card flex-center-column" style={{ gap: isCompact ? '4px' : '12px' }}>
+    <div
+      ref={containerRef}
+      className="widget-card"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        position: 'relative',
+      }}
+    >
       {/* SVG Ring Timer */}
-      <div style={{ position: 'relative', width: svgSize, height: svgSize }}>
+      <div style={{ position: 'relative', width: svgSize, height: svgSize, flexShrink: 0 }}>
         <svg
           width={svgSize}
           height={svgSize}
@@ -117,7 +155,7 @@ export const PomodoroComponent: React.FC<WidgetProps> = ({ config, size }) => {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             fontFamily: 'inherit',
-            fontSize: isCompact ? '1.2rem' : minDimension <= 2 ? '1.5rem' : '2rem',
+            fontSize: `${fontSize}rem`,
             fontWeight: 700,
             color: 'var(--dashboard-text)',
             opacity: 0.7,
@@ -127,58 +165,68 @@ export const PomodoroComponent: React.FC<WidgetProps> = ({ config, size }) => {
         </div>
       </div>
 
-      {/* Controls */}
-      {!isCompact && (
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            onClick={toggleTimer}
-            style={{
-              padding: '6px 16px',
-              borderRadius: '6px',
-              border: 'none',
-              background: isRunning ? 'var(--widget-border)' : 'var(--primary-color)',
-              color: 'var(--dashboard-text)',
-              cursor: 'pointer',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-            }}
-          >
-            {remaining <= 0 ? 'Start' : isRunning ? 'Pause' : 'Start'}
-          </button>
-          <button
-            onClick={resetTimer}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              border: '1px solid var(--widget-border)',
-              background: 'transparent',
-              color: 'var(--dashboard-text)',
-              cursor: 'pointer',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              opacity: 0.7,
-            }}
-          >
-            Reset
-          </button>
-        </div>
-      )}
-
-      {/* Compact controls - just tap the ring area */}
-      {isCompact && (
-        <div
+      {/* Icon Controls - positioned at bottom corners */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '8px',
+          left: '12px',
+          right: '12px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        {/* Reset icon - left side */}
+        <button
+          onClick={resetTimer}
+          title="Reset"
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            border: 'none',
+            background: 'transparent',
+            color: 'var(--dashboard-text)',
             cursor: 'pointer',
+            fontSize: '0.85rem',
+            opacity: 0.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'opacity 0.15s',
           }}
+          onMouseOver={(e) => (e.currentTarget.style.opacity = '0.8')}
+          onMouseOut={(e) => (e.currentTarget.style.opacity = '0.5')}
+        >
+          ↺
+        </button>
+
+        {/* Play/Pause icon - right side */}
+        <button
           onClick={toggleTimer}
-          title={isRunning ? 'Pause' : 'Start'}
-        />
-      )}
+          title={remaining <= 0 ? 'Start' : isRunning ? 'Pause' : 'Start'}
+          style={{
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            border: 'none',
+            background: 'transparent',
+            color: 'var(--dashboard-text)',
+            cursor: 'pointer',
+            fontSize: '0.75rem',
+            opacity: 0.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'opacity 0.15s',
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.opacity = '0.8')}
+          onMouseOut={(e) => (e.currentTarget.style.opacity = '0.5')}
+        >
+          {isRunning ? '⏸' : '▶'}
+        </button>
+      </div>
     </div>
   );
 };
