@@ -1,0 +1,16 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "3001:3001"
+    volumes:
+      # Persist dashboard configuration and secrets
+      - ./dashboard-data:/app/dashboard-data
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      # For production, set a master key for secrets encryption:
+      # - SECRETS_MASTER_KEY=your-64-char-hex-key-here
+    restart: unless-stopped

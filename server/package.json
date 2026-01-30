@@ -1,0 +1,17 @@
+{
+  "name": "cardpane-server",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "imapflow": "^1.2.8",
+    "js-yaml": "^4.1.1",
+    "mailparser": "^3.9.3"
+  }
+}
