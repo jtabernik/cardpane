@@ -17,11 +17,11 @@ COPY src/widgets-external/ ./src/widgets-external/
 RUN mkdir -p /app/dashboard-data/config
 
 # Expose the server port
-EXPOSE 3001
+EXPOSE 5555
 
 # Environment variables
 ENV NODE_ENV=production
-ENV PORT=3001
+ENV PORT=5555
 
 WORKDIR /app/server
 
