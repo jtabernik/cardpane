@@ -11,7 +11,7 @@ import type { Widget } from './core/types';
 /**
  * Use Vite's glob import to discover all widget index.ts files
  */
-const widgetModules = import.meta.glob('/src/widgets-external/*/index.ts');
+const widgetModules = import.meta.glob('./widgets-external/*/index.ts');
 
 /**
  * Registered widgets loaded dynamically

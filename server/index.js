@@ -55,10 +55,14 @@ app.post('/api/layout', (req, res) => {
     const newLayout = req.body;
     const config = loadConfig();
 
+    const oldInstanceCount = (config.layout || []).length;
+    const newInstanceCount = newLayout.length;
+
     // Merge new layout
     config.layout = newLayout;
 
     if (saveConfig(config)) {
+        console.log(`[Server] Layout updated: ${oldInstanceCount} -> ${newInstanceCount} instances`);
         // Sync backends whenever the layout changes
         syncWidgetBackends();
         res.json({ status: 'ok', layout: config.layout });
@@ -372,15 +376,19 @@ function syncWidgetBackends() {
     // 2. Stop backends for instances no longer in layout
     for (const [instanceId, backend] of activeBackends.entries()) {
         if (!activeInstances.has(instanceId)) {
-            console.log(`[Server] Stopping backend for instance: ${instanceId}`);
+            console.log(`[Server] Stopping backend for removed instance: ${instanceId}`);
             if (backend && typeof backend.cleanup === 'function') {
                 try {
                     backend.cleanup();
+                    console.log(`[Server] Cleanup completed for instance: ${instanceId}`);
                 } catch (err) {
                     console.error(`[Server] Error during cleanup for instance ${instanceId}:`, err);
                 }
             }
             activeBackends.delete(instanceId);
+            // Also clear the data snapshot for this instance
+            widgetDataSnapshot.delete(instanceId);
+            console.log(`[Server] Backend and data snapshot removed for instance: ${instanceId}`);
         }
     }
 }

@@ -151,6 +151,13 @@ function App() {
     setEditingWidget(null);
   };
 
+  const handleRemoveWidget = (instanceId: string) => {
+    if (confirm('Remove this widget from the dashboard?')) {
+      const newLayout = layout.filter(item => item.i !== instanceId);
+      handleLayoutChange(newLayout);
+    }
+  };
+
   if (isLoading || isWidgetsLoading) {
     return (
       <div style={{
@@ -347,6 +354,7 @@ function App() {
           layout={layout}
           onLayoutChange={handleLayoutChange}
           onEditWidget={handleEditWidget}
+          onRemoveWidget={handleRemoveWidget}
         />
       </main>
 

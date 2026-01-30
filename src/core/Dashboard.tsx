@@ -14,6 +14,7 @@ interface DashboardProps {
     layout: DashboardLayout;
     onLayoutChange?: (layout: DashboardLayout) => void;
     onEditWidget?: (instanceId: string) => void;
+    onRemoveWidget?: (instanceId: string) => void;
     isEditable?: boolean;
 }
 
@@ -27,6 +28,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     layout,
     onLayoutChange,
     onEditWidget,
+    onRemoveWidget,
     isEditable = true
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -122,6 +124,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                     key={item.i}
                                     hasConfig={widgetDef.configSchema && Object.keys(widgetDef.configSchema).length > 0}
                                     onEdit={onEditWidget ? () => onEditWidget(item.i) : undefined}
+                                    onRemove={onRemoveWidget ? () => onRemoveWidget(item.i) : undefined}
                                 >
                                     <Component
                                         id={item.i}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { WidgetProps } from '../../core/types';
 import { useSSE } from '../../core/useSSE';
 import uPlot from 'uplot';
@@ -18,36 +18,33 @@ interface PrometheusData {
   error?: string;
 }
 
+// Helper functions outside component to avoid recreation
+function formatValue(val: number): string {
+  if (val === undefined || val === null || isNaN(val)) return '-';
+  if (Math.abs(val) >= 1e9) return (val / 1e9).toFixed(2) + 'G';
+  if (Math.abs(val) >= 1e6) return (val / 1e6).toFixed(2) + 'M';
+  if (Math.abs(val) >= 1e3) return (val / 1e3).toFixed(2) + 'K';
+  if (Math.abs(val) < 0.01 && val !== 0) return val.toExponential(2);
+  return val.toFixed(2);
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) return `rgba(96, 165, 250, ${alpha})`;
+  return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${alpha})`;
+}
+
 export const PrometheusComponent: React.FC<WidgetProps> = ({ id, config }) => {
   const [data, setData] = useState<PrometheusData | null>(null);
-  const [chartSize, setChartSize] = useState({ width: 0, height: 0 });
   const chartRef = useRef<HTMLDivElement>(null);
   const uplotRef = useRef<uPlot | null>(null);
+  const sizeRef = useRef({ width: 0, height: 0 });
+  const dataRef = useRef<PrometheusData | null>(null);
 
   const chartColor = config?.chartColor || '#60a5fa';
 
-  // Track whether we have renderable data (for re-running observer setup)
-  const hasRenderableData = data && data.timestamps && data.timestamps.length > 0;
-
-  // Observe chart container size changes
-  // Re-run when hasRenderableData changes so we can attach to the newly rendered chartRef
-  useEffect(() => {
-    const chartContainer = chartRef.current;
-    if (!chartContainer) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        // Only update if we have valid dimensions
-        if (width > 0 && height > 0) {
-          setChartSize({ width, height });
-        }
-      }
-    });
-
-    resizeObserver.observe(chartContainer);
-    return () => resizeObserver.disconnect();
-  }, [hasRenderableData]);
+  // Keep dataRef in sync for use in resize handler
+  dataRef.current = data;
 
   // Subscribe to SSE updates
   useSSE('prometheus-widget', (incoming) => {
@@ -56,79 +53,42 @@ export const PrometheusComponent: React.FC<WidgetProps> = ({ id, config }) => {
     }
   });
 
-  // Create/update uPlot chart
+  // Update chart data when data changes (without recreating chart)
   useEffect(() => {
-    if (!chartRef.current || !data || !data.timestamps || data.timestamps.length === 0) {
-      // Clear existing chart if no data
-      if (uplotRef.current) {
-        uplotRef.current.destroy();
-        uplotRef.current = null;
-      }
+    if (!uplotRef.current || !data?.timestamps || data.timestamps.length === 0) {
       return;
     }
+    // Just update data on existing chart
+    uplotRef.current.setData([data.timestamps, data.values]);
+  }, [data]);
 
-    // Don't create chart until we have valid dimensions
-    if (chartSize.width < 50 || chartSize.height < 50) {
-      return;
-    }
-
-    const chartContainer = chartRef.current;
-
-    // Use the actual measured chart container dimensions
-    const chartWidth = Math.floor(chartSize.width);
-    const chartHeight = Math.floor(chartSize.height);
-
-    // Prepare data for uPlot: [timestamps, values]
-    const plotData: uPlot.AlignedData = [data.timestamps, data.values];
-
-    // Chart options
-    const opts: uPlot.Options = {
-      width: chartWidth,
-      height: chartHeight,
-      cursor: {
-        show: true,
-        x: true,
-        y: false,
-      },
-      legend: {
-        show: false,
-      },
+  // Build chart options
+  const buildChartOpts = useCallback(
+    (width: number, height: number, timeRange: string): uPlot.Options => ({
+      width,
+      height,
+      cursor: { show: true, x: true, y: false },
+      legend: { show: false },
       axes: [
         {
-          // X axis (time)
           stroke: 'rgba(255,255,255,0.3)',
-          grid: {
-            stroke: 'rgba(255,255,255,0.05)',
-            width: 1,
-          },
-          ticks: {
-            stroke: 'rgba(255,255,255,0.1)',
-            width: 1,
-          },
-          values: (_, ticks) => {
-            return ticks.map((t) => {
+          grid: { stroke: 'rgba(255,255,255,0.05)', width: 1 },
+          ticks: { stroke: 'rgba(255,255,255,0.1)', width: 1 },
+          values: (_, ticks) =>
+            ticks.map((t) => {
               const date = new Date(t * 1000);
-              // Show time for short ranges, date for longer
-              if (data.timeRange === '7d') {
+              if (timeRange === '7d') {
                 return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
               }
               return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-            });
-          },
+            }),
           font: '10px system-ui',
           size: 28,
         },
         {
-          // Y axis (values)
           stroke: 'rgba(255,255,255,0.3)',
-          grid: {
-            stroke: 'rgba(255,255,255,0.05)',
-            width: 1,
-          },
-          ticks: {
-            stroke: 'rgba(255,255,255,0.1)',
-            width: 1,
-          },
+          grid: { stroke: 'rgba(255,255,255,0.05)', width: 1 },
+          ticks: { stroke: 'rgba(255,255,255,0.1)', width: 1 },
           values: (_, ticks) => ticks.map((v) => formatValue(v)),
           font: '10px system-ui',
           size: 50,
@@ -143,62 +103,119 @@ export const PrometheusComponent: React.FC<WidgetProps> = ({ id, config }) => {
         },
       ],
       scales: {
-        x: {
-          time: true,
-        },
+        x: { time: true },
         y: {
           auto: true,
           range: (_, min, max) => {
-            // Add some padding to the range
-            const padding = (max - min) * 0.1 || 1;
-            return [min - padding, max + padding];
+            const pad = (max - min) * 0.1 || 1;
+            return [min - pad, max + pad];
           },
         },
       },
-    };
+    }),
+    [chartColor]
+  );
 
-    // Update existing chart or create new one
-    if (uplotRef.current) {
-      // Update data and resize if needed
-      uplotRef.current.setData(plotData);
-      uplotRef.current.setSize({ width: chartWidth, height: chartHeight });
-    } else {
-      // Create new chart
-      chartContainer.innerHTML = '';
-      uplotRef.current = new uPlot(opts, plotData, chartContainer);
-    }
-
-    return () => {
-      // Don't destroy on every update, only on unmount
-    };
-  }, [data, chartSize, chartColor]);
-
-  // Cleanup on unmount
+  // Create chart and resize observer - only depends on chartColor (config change)
   useEffect(() => {
+    const container = chartRef.current;
+    if (!container) return;
+
+    // Function to create/recreate chart
+    const createChart = () => {
+      const currentData = dataRef.current;
+      if (!currentData?.timestamps || currentData.timestamps.length === 0) {
+        return;
+      }
+
+      const rect = container.getBoundingClientRect();
+      const width = Math.floor(rect.width);
+      const height = Math.floor(rect.height);
+
+      if (width < 50 || height < 50) return;
+
+      // Destroy existing chart
+      if (uplotRef.current) {
+        uplotRef.current.destroy();
+        uplotRef.current = null;
+      }
+
+      sizeRef.current = { width, height };
+      container.innerHTML = '';
+
+      const plotData: uPlot.AlignedData = [currentData.timestamps, currentData.values];
+      const opts = buildChartOpts(width, height, currentData.timeRange);
+      uplotRef.current = new uPlot(opts, plotData, container);
+    };
+
+    // Initial chart creation with small delay to ensure container is sized
+    const initTimeout = setTimeout(createChart, 50);
+
+    // Set up resize observer
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        for (const entry of entries) {
+          const newWidth = Math.floor(entry.contentRect.width);
+          const newHeight = Math.floor(entry.contentRect.height);
+
+          if (newWidth < 50 || newHeight < 50) continue;
+
+          // Only act if size changed significantly
+          if (
+            Math.abs(newWidth - sizeRef.current.width) > 5 ||
+            Math.abs(newHeight - sizeRef.current.height) > 5
+          ) {
+            sizeRef.current = { width: newWidth, height: newHeight };
+
+            if (uplotRef.current) {
+              // Just resize existing chart
+              uplotRef.current.setSize({ width: newWidth, height: newHeight });
+            } else {
+              // No chart yet, try to create one
+              createChart();
+            }
+          }
+        }
+      }, 100);
+    });
+
+    resizeObserver.observe(container);
+
+    // Cleanup
     return () => {
+      clearTimeout(initTimeout);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeObserver.disconnect();
       if (uplotRef.current) {
         uplotRef.current.destroy();
         uplotRef.current = null;
       }
     };
-  }, []);
+  }, [buildChartOpts]); // Only recreate on chartColor change
 
-  // Format value for display
-  function formatValue(val: number): string {
-    if (val === undefined || val === null || isNaN(val)) return '-';
-    if (Math.abs(val) >= 1e9) return (val / 1e9).toFixed(2) + 'G';
-    if (Math.abs(val) >= 1e6) return (val / 1e6).toFixed(2) + 'M';
-    if (Math.abs(val) >= 1e3) return (val / 1e3).toFixed(2) + 'K';
-    if (Math.abs(val) < 0.01 && val !== 0) return val.toExponential(2);
-    return val.toFixed(2);
-  }
+  // Track if we need to create chart when data first arrives
+  const hasData = data?.timestamps && data.timestamps.length > 0;
+  const chartExists = uplotRef.current !== null;
 
-  // Convert hex color to rgba
-  function hexToRgba(hex: string, alpha: number): string {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    if (!result) return `rgba(96, 165, 250, ${alpha})`;
-    return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${alpha})`;
-  }
+  // Create chart when data first becomes available
+  useEffect(() => {
+    if (hasData && !chartExists && chartRef.current) {
+      const container = chartRef.current;
+      const rect = container.getBoundingClientRect();
+      const width = Math.floor(rect.width);
+      const height = Math.floor(rect.height);
+
+      if (width >= 50 && height >= 50 && data) {
+        sizeRef.current = { width, height };
+        container.innerHTML = '';
+        const plotData: uPlot.AlignedData = [data.timestamps, data.values];
+        const opts = buildChartOpts(width, height, data.timeRange);
+        uplotRef.current = new uPlot(opts, plotData, container);
+      }
+    }
+  }, [hasData, chartExists, data, buildChartOpts]);
 
   // Loading state
   if (!data) {
@@ -255,13 +272,7 @@ export const PrometheusComponent: React.FC<WidgetProps> = ({ id, config }) => {
           {data.label}
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-          <span
-            style={{
-              fontSize: '1.1rem',
-              fontWeight: 600,
-              color: chartColor,
-            }}
-          >
+          <span style={{ fontSize: '1.1rem', fontWeight: 600, color: chartColor }}>
             {formatValue(data.current ?? 0)}
           </span>
           <span className="text-muted" style={{ fontSize: '0.65rem' }}>

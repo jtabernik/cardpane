@@ -6,24 +6,6 @@ layout:
     'y': 0
     w: 1
     h: 2
-  - i: '2'
-    widgetId: quote-widget
-    x: 3
-    'y': 8
-    w: 1
-    h: 2
-  - i: '3'
-    widgetId: heartbeat-widget
-    x: 2
-    'y': 6
-    w: 2
-    h: 2
-  - i: 6d7684ff-cf85-447d-aa42-6451089d9ec6
-    widgetId: sse-debugger-widget
-    x: 0
-    'y': 6
-    w: 2
-    h: 4
   - i: e521ba02-6f97-44b9-9e1d-e02e31c88102
     widgetId: weather-widget
     x: 1
@@ -114,7 +96,7 @@ layout:
     h: 2
     config:
       duration: 25
-  - i: a56aa9f6-3105-41db-b801-7eca4de3f24f
+  - i: 8426da87-e04a-4b68-b529-1c98eb24c788
     widgetId: prometheus-widget
     x: 0
     'y': 4
@@ -123,6 +105,6 @@ layout:
     config:
       timeRange: 1h
       refreshInterval: 30
-      label: 'C: bytes free'
+      label: 'C: Free Space'
       chartColor: '#60a5fa'
 version: 1.0.0

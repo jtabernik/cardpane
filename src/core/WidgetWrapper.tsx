@@ -8,6 +8,7 @@ interface WidgetWrapperProps {
   style?: React.CSSProperties;
   hasConfig?: boolean;
   onEdit?: () => void;
+  onRemove?: () => void;
   // Props injected by react-grid-layout
   onMouseDown?: React.MouseEventHandler;
   onMouseUp?: React.MouseEventHandler;
@@ -64,10 +65,15 @@ class WidgetErrorBoundary extends Component<{ children: ReactNode }, ErrorBounda
  * and handle grid interactions (drag handle etc)
  */
 export const WidgetWrapper = React.forwardRef<HTMLDivElement, WidgetWrapperProps>(
-  ({ children, className, style, hasConfig, onEdit, ...props }, ref) => {
+  ({ children, className, style, hasConfig, onEdit, onRemove, ...props }, ref) => {
     const handleEditClick = (e: React.MouseEvent) => {
       e.stopPropagation();
       onEdit?.();
+    };
+
+    const handleRemoveClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onRemove?.();
     };
 
     return (
@@ -77,15 +83,26 @@ export const WidgetWrapper = React.forwardRef<HTMLDivElement, WidgetWrapperProps
         className={clsx('widget-wrapper', className)}
         {...props}
       >
-        {hasConfig && onEdit && (
-          <button
-            className="widget-edit-button"
-            onClick={handleEditClick}
-            title="Configure widget"
-          >
-            ⚙️
-          </button>
-        )}
+        <div className="widget-actions">
+          {hasConfig && onEdit && (
+            <button
+              className="widget-action-button"
+              onClick={handleEditClick}
+              title="Configure widget"
+            >
+              ⚙️
+            </button>
+          )}
+          {onRemove && (
+            <button
+              className="widget-action-button widget-remove-button"
+              onClick={handleRemoveClick}
+              title="Remove widget"
+            >
+              ✕
+            </button>
+          )}
+        </div>
 
         <div className="widget-content">
           <WidgetErrorBoundary>
@@ -110,28 +127,39 @@ export const WidgetWrapper = React.forwardRef<HTMLDivElement, WidgetWrapperProps
              border-color: var(--primary-color);
           }
 
-          .widget-wrapper:hover .widget-edit-button {
+          .widget-wrapper:hover .widget-actions {
             opacity: 1;
           }
 
-          .widget-edit-button {
+          .widget-actions {
             position: absolute;
             top: 8px;
             right: 8px;
             z-index: 10;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+
+          .widget-action-button {
             background: var(--widget-bg);
             border: 1px solid var(--widget-border);
             border-radius: 4px;
             padding: 6px 10px;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s ease, background 0.2s ease;
+            transition: background 0.2s ease, border-color 0.2s ease;
             font-size: 14px;
           }
 
-          .widget-edit-button:hover {
+          .widget-action-button:hover {
             background: var(--primary-color);
             border-color: var(--primary-color);
+          }
+
+          .widget-remove-button:hover {
+            background: #e74c3c;
+            border-color: #e74c3c;
           }
 
           .widget-content {
