@@ -27,6 +27,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-grid-layout": "^2.2.2",
+    "uplot": "^1.6.32",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

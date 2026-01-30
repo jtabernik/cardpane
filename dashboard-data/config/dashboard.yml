@@ -9,13 +9,13 @@ layout:
   - i: '2'
     widgetId: quote-widget
     x: 3
-    'y': 6
+    'y': 8
     w: 1
     h: 2
   - i: '3'
     widgetId: heartbeat-widget
-    x: 4
-    'y': 8
+    x: 2
+    'y': 6
     w: 2
     h: 2
   - i: 6d7684ff-cf85-447d-aa42-6451089d9ec6
@@ -76,7 +76,7 @@ layout:
     x: 0
     'y': 2
     w: 2
-    h: 4
+    h: 2
     config:
       hostAddress: 192.168.0.150
       port: 2375
@@ -88,7 +88,7 @@ layout:
     x: 2
     'y': 2
     w: 2
-    h: 4
+    h: 2
     config:
       hostAddress: 192.168.0.150
       port: 2375
@@ -104,14 +104,25 @@ layout:
     config:
       imapServer: imap.mail.yahoo.com
       imapPort: 993
-      emailCount: 10
+      emailCount: 15
       refreshInterval: 5
   - i: 69bc7485-b3d3-4f4c-bcb4-7d998b58eba2
     widgetId: pomodoro-widget
-    x: 2
-    'y': 6
+    x: 3
+    'y': 4
     w: 1
     h: 2
     config:
       duration: 25
+  - i: a56aa9f6-3105-41db-b801-7eca4de3f24f
+    widgetId: prometheus-widget
+    x: 0
+    'y': 4
+    w: 3
+    h: 2
+    config:
+      timeRange: 1h
+      refreshInterval: 30
+      label: 'C: bytes free'
+      chartColor: '#60a5fa'
 version: 1.0.0
