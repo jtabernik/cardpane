@@ -38,6 +38,30 @@ app.use(bodyParser.json());
 // Initialize Storage
 ensureStorage();
 
+// Root endpoint - show available routes
+app.get('/', (req, res) => {
+    res.json({
+        name: 'CardPane Server',
+        version: '0.1.0',
+        endpoints: {
+            health: '/api/health',
+            layout: '/api/layout',
+            config: '/api/config',
+            events: '/api/events (SSE)',
+            dashboard: {
+                snapshot: '/api/dashboard/snapshot',
+                aiSummary: '/api/dashboard/ai-summary',
+                widget: '/api/dashboard/widget/:instanceId',
+                widgetType: '/api/dashboard/widget-type/:widgetId'
+            },
+            secrets: {
+                list: '/api/admin/secrets',
+                widget: '/api/admin/widgets/:widgetId/secrets'
+            }
+        }
+    });
+});
+
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
