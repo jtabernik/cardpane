@@ -26,13 +26,12 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentStyle, setCurrentStyle] = useState('default');
 
-  // Load saved style preference
+  // Load saved style preference and apply stylesheet
   useEffect(() => {
     const saved = localStorage.getItem('widget-stylesheet');
-    if (saved) {
-      setCurrentStyle(saved);
-      applyStylesheet(saved);
-    }
+    const styleToApply = saved || 'default';
+    setCurrentStyle(styleToApply);
+    applyStylesheet(styleToApply);
   }, []);
 
   // Load all widgets dynamically
