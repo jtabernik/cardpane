@@ -10,9 +10,9 @@ import { API_ENDPOINTS } from './config';
 import './styles/theme.css';
 
 const STYLESHEETS = [
-  { id: 'default', name: 'Default', path: '/src/styles/widgets.css' },
-  { id: 'neon', name: 'Neon', path: '/src/styles/widgets-neon.css' },
-  { id: 'mono', name: 'Monochrome', path: '/src/styles/widgets-mono.css' },
+  { id: 'default', name: 'Default', path: '/themes/widgets.css' },
+  { id: 'neon', name: 'Neon', path: '/themes/widgets-neon.css' },
+  { id: 'mono', name: 'Monochrome', path: '/themes/widgets-mono.css' },
 ];
 
 function App() {
