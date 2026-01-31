@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Widget, ConfigSchema } from '../core/types';
 
 interface EditWidgetModalProps {
@@ -190,45 +190,7 @@ export const EditWidgetModal: React.FC<EditWidgetModalProps> = ({
                 </select>
               )}
 
-              {field.type === 'array' && (
-                <div style={arrayContainerStyle}>
-                  {(config[key] || []).map((item: any, index: number) => (
-                    <div key={index} style={arrayItemStyle}>
-                      <input
-                        type="text"
-                        value={item}
-                        onChange={(e) => {
-                          const newArray = [...(config[key] || [])];
-                          newArray[index] = e.target.value.toUpperCase();
-                          handleChange(key, newArray);
-                        }}
-                        style={arrayInputStyle}
-                        placeholder={field.itemLabel || 'Item'}
-                      />
-                      <button
-                        onClick={() => {
-                          const newArray = (config[key] || []).filter((_: any, i: number) => i !== index);
-                          handleChange(key, newArray);
-                        }}
-                        style={removeButtonStyle}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => {
-                      const newArray = [...(config[key] || []), ''];
-                      handleChange(key, newArray);
-                    }}
-                    style={addButtonStyle}
-                  >
-                    + Add {field.itemLabel || 'Item'}
-                  </button>
-                </div>
-              )}
-
-              {field.hint && field.type !== 'boolean' && field.type !== 'array' && (
+              {field.hint && field.type !== 'boolean' && (
                 <p style={hintStyle}>{field.hint}</p>
               )}
 
@@ -400,44 +362,3 @@ const saveButtonStyle: React.CSSProperties = {
   color: 'white',
 };
 
-const arrayContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-};
-
-const arrayItemStyle: React.CSSProperties = {
-  display: 'flex',
-  gap: '8px',
-  alignItems: 'center',
-};
-
-const arrayInputStyle: React.CSSProperties = {
-  ...inputStyle,
-  flex: 1,
-};
-
-const removeButtonStyle: React.CSSProperties = {
-  padding: '8px 12px',
-  borderRadius: '6px',
-  border: '1px solid #ef4444',
-  backgroundColor: 'transparent',
-  color: '#ef4444',
-  fontSize: '12px',
-  fontWeight: '500',
-  cursor: 'pointer',
-  transition: 'all 0.2s',
-  whiteSpace: 'nowrap',
-};
-
-const addButtonStyle: React.CSSProperties = {
-  padding: '8px 12px',
-  borderRadius: '6px',
-  border: '1px solid var(--primary-color)',
-  backgroundColor: 'transparent',
-  color: 'var(--primary-color)',
-  fontSize: '12px',
-  fontWeight: '500',
-  cursor: 'pointer',
-  transition: 'all 0.2s',
-};

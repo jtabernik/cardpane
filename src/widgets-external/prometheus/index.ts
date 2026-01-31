@@ -68,7 +68,7 @@ export const widget: Widget = {
       required: false,
     },
     password: {
-      type: 'password',
+      type: 'string',
       label: 'Password (optional)',
       description: 'Password for basic authentication',
       required: false,
