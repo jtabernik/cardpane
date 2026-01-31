@@ -21,19 +21,6 @@ dist/
 # Documentation
 *.md
 
-# Frontend source (not needed for server-only)
-src/components/
-src/core/
-src/styles/
-src/*.tsx
-src/*.ts
-!src/widgets-external/
-
-# Config files not needed in container
-tsconfig*.json
-vite.config.ts
-eslint.config.js
-
 # Test files
 *.test.*
 *.spec.*
