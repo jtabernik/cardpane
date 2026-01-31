@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
+import { API_ENDPOINTS } from '../config';
 
 type SSEEvent = {
     type: string;
@@ -22,8 +23,7 @@ export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const eventSourceRef = useRef<EventSource | null>(null);
 
     useEffect(() => {
-        const url = 'http://localhost:3001/api/events';
-        const es = new EventSource(url);
+        const es = new EventSource(API_ENDPOINTS.events);
         eventSourceRef.current = es;
 
         es.onopen = () => {

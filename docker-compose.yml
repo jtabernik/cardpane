@@ -14,3 +14,13 @@ services:
       # For production, set a master key for secrets encryption:
       # - SECRETS_MASTER_KEY=your-64-char-hex-key-here
     restart: unless-stopped
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    ports:
+      - "5556:80"
+    depends_on:
+      - server
+    restart: unless-stopped

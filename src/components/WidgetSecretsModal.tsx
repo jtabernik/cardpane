@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Widget, SecretsSchema } from '../core/types';
+import { API_ENDPOINTS } from '../config';
 
 interface WidgetSecretsModalProps {
   widget: Widget;
@@ -27,7 +28,7 @@ export const WidgetSecretsModal: React.FC<WidgetSecretsModalProps> = ({
       }
 
       try {
-        const response = await fetch(`http://localhost:3001/api/admin/widgets/${widget.id}/secrets`);
+        const response = await fetch(`${API_ENDPOINTS.secrets(widget.id)}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -157,7 +158,7 @@ export const WidgetSecretsModal: React.FC<WidgetSecretsModalProps> = ({
     setSaveStatus('idle');
 
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/widgets/${widget.id}/secrets`, {
+      const response = await fetch(`${API_ENDPOINTS.secrets(widget.id)}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

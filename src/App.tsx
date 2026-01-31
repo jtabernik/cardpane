@@ -6,6 +6,7 @@ import { AddWidgetModal } from './components/AddWidgetModal';
 import { EditWidgetModal } from './components/EditWidgetModal';
 import { SettingsPage } from './components/SettingsPage';
 import { loadWidgets } from './widgets';
+import { API_ENDPOINTS } from './config';
 import './styles/theme.css';
 
 const STYLESHEETS = [
@@ -47,7 +48,7 @@ function App() {
 
   // Load layout from API on mount
   useEffect(() => {
-    fetch('http://localhost:3001/api/layout')
+    fetch(API_ENDPOINTS.layout)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
@@ -90,7 +91,7 @@ function App() {
   };
 
   const saveLayout = (newLayout: DashboardLayout) => {
-    fetch('http://localhost:3001/api/layout', {
+    fetch(API_ENDPOINTS.layout, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newLayout)

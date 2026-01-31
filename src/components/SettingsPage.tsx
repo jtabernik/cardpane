@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { registeredWidgets } from '../widgets';
 import { WidgetSecretsModal } from './WidgetSecretsModal';
 import type { Widget } from '../core/types';
+import { API_BASE_URL } from '../config';
 
 interface SettingsPageProps {
   onClose: () => void;
@@ -186,7 +187,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onClose }) => {
                   <div style={settingItemStyle}>
                     <div>
                       <div style={settingLabelStyle}>Backend URL</div>
-                      <div style={settingDescStyle}>Server running on http://localhost:3001</div>
+                      <div style={settingDescStyle}>Server: {API_BASE_URL || window.location.origin}</div>
                     </div>
                     <div style={settingValueStyle}>Active</div>
                   </div>
